@@ -46,8 +46,9 @@ If the head is ever two steps directly up, down, left, or right from the tail, t
 Simulate your complete hypothetical series of motions. How many positions does the tail of the rope visit at least once?
 
 """
-
 from typing import List, Dict, Set, Union
+
+
 if __name__ == "__main__":
     directions: List[List[str]] = []
     with open("9a.txt") as f:
