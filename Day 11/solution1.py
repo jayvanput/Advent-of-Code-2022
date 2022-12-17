@@ -34,133 +34,82 @@ In this example, the two most active monkeys inspected items 101 and 105 times. 
 
 Figure out which monkeys to chase by counting how many items they inspect over 20 rounds. What is the level of monkey business after 20 rounds of stuff-slinging simian shenanigans?
 """
-from typing import List, Dict, Callable
+from typing import List, Callable
 
 
 class Monkey:
-    def __init__(self, items: List[int], test_function: Callable[[int], tuple[int, int]]):
+    def __init__(self, items: List[int], operation: Callable[[int], int], prime: int, true_monkey: int, false_monkey: int):
         self.items = items
-        self.test_function = test_function
+        self.operation = operation
+        self.prime = prime
+        self.true_monkey = true_monkey
+        self.false_monkey = false_monkey
         self.tosses = 0
 
     def toss(self, value: int) -> tuple[int, int]:
-        target_monkey, item_worry_level = self.test_function(value)
+        target_monkey, item_worry_level = self.test(value)
         self.items.pop(0)
         return target_monkey, item_worry_level
 
     def add_to_items(self, item: int) -> None:
         self.items.append(item)
 
-def test_0(worry_level: int, ) -> tuple[int, int]:
-    worry_level = (worry_level * 5) // 3
-    if worry_level % 7 == 0:
-        return 6, worry_level
-    else:
-        return 7, worry_level
+    def test(self, worry_level: int) -> tuple[int, int]:
+        worry_level = self.operation(worry_level) // 3
+        if worry_level % self.prime == 0:
+            return self.true_monkey, worry_level
+        else:
+            return self.false_monkey, worry_level
 
-def test_1(worry_level: int, ) -> tuple[int, int]:
-    worry_level = (worry_level + 1) // 3
-    if worry_level % 17 == 0:
-        return 0, worry_level
-    else:
-        return 6, worry_level
 
-def test_2(worry_level: int, ) -> tuple[int, int]:
-    worry_level = (worry_level + 8) // 3
-    if worry_level % 11 == 0:
-        return 5, worry_level
-    else:
-        return 3, worry_level
+def monkey_0_test(worry_level: int):
+        return worry_level * 5
 
-def test_3(worry_level: int, ) -> tuple[int, int]:
-    worry_level = (worry_level + 4) // 3
-    if worry_level % 13 == 0:
-        return 0, worry_level
-    else:
-        return 1, worry_level
+def monkey_1_test(worry_level: int):
+    return worry_level + 1
 
-def test_4(worry_level: int, ) -> tuple[int, int]:
-    worry_level = (worry_level + 7) // 3
-    if worry_level % 19 == 0:
-        return 5, worry_level
-    else:
-        return 2, worry_level
+def monkey_2_test(worry_level: int):
+    return worry_level + 8
 
-def test_5(worry_level: int, ) -> tuple[int, int]:
-    worry_level = (worry_level + 2) // 3
-    if worry_level % 2 == 0:
-        return 1, worry_level
-    else:
-        return 3, worry_level
+def monkey_3_test(worry_level: int):
+    return worry_level + 4
 
-def test_6(worry_level: int, ) -> tuple[int, int]:
-    worry_level = (worry_level * 11) // 3
-    if worry_level % 5 == 0:
-        return 7, worry_level
-    else:
-        return 4, worry_level
+def monkey_4_test(worry_level: int):
+    return worry_level + 7
 
-def test_7(worry_level: int, ) -> tuple[int, int]:
-    worry_level = (worry_level * worry_level) // 3
-    if worry_level % 3 == 0:
-        return 4, worry_level
-    else:
-        return 2, worry_level
+def monkey_5_test(worry_level: int):
+    return worry_level + 2
+
+def monkey_6_test(worry_level: int):
+    return worry_level * 11
+
+def monkey_7_test(worry_level: int):
+    return worry_level * worry_level
+
 if __name__ == "__main__":
-    monkey_0 = Monkey([89, 84, 88, 78, 70], test_function)
-    monkey_1 = Monkey([76, 62, 61, 54, 69, 60, 85], test_1)
-    monkey_2 = Monkey([83, 89, 53], test_2)
-    monkey_3 = Monkey([95, 94, 85, 57], test_3)
-    monkey_4 = Monkey([82, 98], test_4)
-    monkey_5 = Monkey([69], test_5)
-    monkey_6 = Monkey([82, 70, 58, 87, 59, 99, 92, 65], test_6)
-    monkey_7 = Monkey([91, 53, 96, 98, 68, 82], test_7)
 
+
+    monkey_0 = Monkey([89, 84, 88, 78, 70], monkey_0_test, 7, 6, 7)
+    monkey_1 = Monkey([76, 62, 61, 54, 69, 60, 85], monkey_1_test, 17, 0, 6)
+    monkey_2 = Monkey([83, 89, 53], monkey_2_test, 11, 5, 3)
+    monkey_3 = Monkey([95, 94, 85, 57], monkey_3_test, 13, 0, 1)
+    monkey_4 = Monkey([82, 98], monkey_4_test, 19, 5, 2)
+    monkey_5 = Monkey([69], monkey_5_test, 2, 1, 3)
+    monkey_6 = Monkey([82, 70, 58, 87, 59, 99, 92, 65], monkey_6_test, 5, 7, 4)
+    monkey_7 = Monkey([91, 53, 96, 98, 68, 82], monkey_7_test, 3, 4, 2)
+
+    monkeys = [monkey_0, monkey_1, monkey_2, monkey_3, monkey_4, monkey_5, monkey_6, monkey_7]
     for _ in range(20):
-        while monkey_0.items:
-            tosses[0] += 1
-            monkey_number, item_worry_level = monkey_0.toss(monkey_0.items[0])
-            target_monkey = monkeys[monkey_number]
-            target_monkey.add_to_items(item_worry_level)
-        while monkey_1.items:
-            print(monkey_1.items[0])
-            monkey_number, item_worry_level = monkey_1.toss(monkey_1.items[0])
-            target_monkey = monkeys[monkey_number]
-            tosses[1] += 1
-            target_monkey.add_to_items(item_worry_level)
-        while monkey_2.items:
-            monkey_number, item_worry_level = monkey_2.toss(monkey_2.items[0])
-            target_monkey = monkeys[monkey_number]
-            tosses[2] += 1
-            target_monkey.add_to_items(item_worry_level)
-        while monkey_3.items:
-            monkey_number, item_worry_level = monkey_3.toss(monkey_3.items[0])
-            target_monkey = monkeys[monkey_number]
-            tosses[3] += 1
-            target_monkey.add_to_items(item_worry_level)
-        while monkey_4.items:
-            monkey_number, item_worry_level = monkey_4.toss(monkey_4.items[0])
-            target_monkey = monkeys[monkey_number]
-            tosses[4] += 1
-            target_monkey.add_to_items(item_worry_level)
-        while monkey_5.items:
-            monkey_number, item_worry_level = monkey_5.toss(monkey_5.items[0])
-            target_monkey = monkeys[monkey_number]
-            tosses[5] += 1
-            target_monkey.add_to_items(item_worry_level)
-        while monkey_6.items:
-            monkey_number, item_worry_level = monkey_6.toss(monkey_6.items[0])
-            target_monkey = monkeys[monkey_number]
-            tosses[6] += 1
-            target_monkey.add_to_items(item_worry_level)
-        while monkey_7.items:
-            monkey_number, item_worry_level = monkey_7.toss(monkey_7.items[0])
-            target_monkey = monkeys[monkey_number]
-            tosses[7] += 1
-            target_monkey.add_to_items(item_worry_level)
-    for key, value in tosses.items():
-        print(key, value)
+        for monkey in monkeys:
+            while monkey.items:
+                monkey.tosses += 1
+                monkey_number, item_worry_level = monkey.toss(monkey.items[0])
+                target_monkey = monkeys[monkey_number]
+                target_monkey.add_to_items(item_worry_level)
+
+    for monkey in monkeys:
+        print(monkey.tosses)
 
 """
-Notes: This problem sucks.
+Notes: This problem is not very clean to implement but I practiced some OOP and tried to make this as clean as possible.
 """
